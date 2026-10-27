@@ -582,6 +582,11 @@ mod tests {
     use std::os::darwin::fs::MetadataExt;
     use std::path::Path;
 
+    /// Test assets committed under `tests/fixtures/` (tracked, unlike the ignored `test/` dir).
+    fn fixture(rel: &str) -> PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures").join(rel)
+    }
+
     #[test]
     fn caption_roundtrip_dc_description() {
         let tmp_dir = std::env::temp_dir().join("bridge_lite_caption_roundtrip");
@@ -678,7 +683,7 @@ mod tests {
         // DSE06383.xmp was written by Adobe Bridge (Japanese) with a Red label.
         // Bridge writes xmp:Label="選択" + photoshop:LabelColor="red".
         // We should read it as Label::Red via photoshop:LabelColor.
-        let arw = Path::new("/Users/itotsum/work/bridge-lite/test/20260221/raw/DSE06383.ARW");
+        let arw = &fixture("raw/DSE06383.ARW");
         let data = read_sidecar(arw).expect("sidecar should be readable via xmp_toolkit");
         assert_eq!(data.label, Some(Label::Red), "Bridge photoshop:LabelColor should map to Label::Red");
         assert_eq!(data.flag, None);
@@ -687,7 +692,7 @@ mod tests {
     #[test]
     fn reads_embedded_jpg_rating() {
         // DSE06419.JPG was rated 4 stars in Adobe Bridge (embedded XMP, no sidecar).
-        let jpg = Path::new("/Users/itotsum/work/bridge-lite/test/20260221/jpg/DSE06419.JPG");
+        let jpg = &fixture("jpg/DSE06419.JPG");
         let data = read_metadata(jpg, false).expect("embedded XMP should be readable");
         assert_eq!(data.rating, Some(4), "Bridge embedded xmp:Rating=4 should be read");
         assert_eq!(data.flag, None);
@@ -812,7 +817,7 @@ mod tests {
 
     #[test]
     fn write_preserves_existing_properties() {
-        let arw = Path::new("/Users/itotsum/work/bridge-lite/test/20260221/raw/DSE06383.ARW");
+        let arw = &fixture("raw/DSE06383.ARW");
         let _original = read_sidecar(arw).expect("test sidecar should exist");
 
         let tmp_dir = std::env::temp_dir().join("bridge_lite_xmp_preserve_test");
@@ -936,7 +941,7 @@ mod tests {
     #[test]
     fn roundtrip_embedded_jpg() {
         // Copy a small JPG to temp dir, write rating+label, read back.
-        let src_jpg = Path::new("/Users/itotsum/work/bridge-lite/test/20260221/jpg/DSE06419.JPG");
+        let src_jpg = &fixture("jpg/DSE06419.JPG");
         if !src_jpg.exists() {
             return; // Skip if test asset unavailable
         }
@@ -966,7 +971,7 @@ mod tests {
     #[test]
     #[cfg(target_os = "macos")]
     fn embedded_write_preserves_btime() {
-        let src_jpg = Path::new("/Users/itotsum/work/bridge-lite/test/20260221/jpg/DSE06419.JPG");
+        let src_jpg = &fixture("jpg/DSE06419.JPG");
         if !src_jpg.exists() {
             return;
         }
