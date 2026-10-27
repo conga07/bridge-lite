@@ -255,14 +255,20 @@ final class LibraryStore: ReindexedGroupSink {
         panel.allowsMultipleSelection = false
         panel.title = String(localized: "Open Folder")
         if panel.runModal() == .OK, let url = panel.url {
-            if settings.warnSlowStorage {
-                let kind = StorageProbe.probe(url: url)
-                if kind == .rotational || kind == .network {
-                    guard confirmSlowStorage(kind: kind) else { return }
-                }
-            }
-            loadFolder(url)
+            openFolderWithChecks(url)
         }
+    }
+
+    /// Open Folder… と同じ扱いでフォルダを開く（低速ストレージ警告 → loadFolder）。
+    /// Finder / Dock / ターミナル (`open`・コマンドライン引数) からの起動もここを通す。
+    func openFolderWithChecks(_ url: URL) {
+        if settings.warnSlowStorage {
+            let kind = StorageProbe.probe(url: url)
+            if kind == .rotational || kind == .network {
+                guard confirmSlowStorage(kind: kind) else { return }
+            }
+        }
+        loadFolder(url)
     }
 
     /// 現在開いているフォルダを最初から再スキャンする。サムネイルも含めて全状態をリセットする。

@@ -13,6 +13,8 @@
   `xcode/BridgeLite/Generated/` (патчи Swift 6 через sed; не править эти файлы вручную).
 - Тесты Rust: `cargo test -p bridge-core`. Тестовые файлы лежат в `crates/bridge-core/tests/fixtures/`
   (`test/` в .gitignore — на него не опираться, абсолютные пути не использовать).
+  Не открывать `tests/fixtures/` в самом приложении: оно переписывает XMP sidecar (например `xmp:Label="選択"` → `Red`)
+  и портит фикстуры. Для ручной проверки копировать файлы во временную папку.
 - **Никогда не править `project.pbxproj` вручную.** Файлы добавлять/удалять и менять настройки через
   `xcode/BridgeLite/project.yml` + `xcodegen generate`. Если пропал `Package.resolved` — закрыть Xcode и
   `git checkout HEAD -- <путь к Package.resolved>` (см. README).
@@ -22,6 +24,9 @@
 - Sparkle отключён: нет `SUFeedURL`, `startingUpdater: false`, убраны пункт меню и секция настроек «Updates».
   Не возвращать проверку обновлений на сайт автора.
 - Тесты xmp используют `fixture()` вместо путей автора.
+- Открытие папки из терминала: `tools/bridgelite [папка]` (через `open -b io.github.bridge-lite`, чтобы не попасть
+  в App Store-версию `io.github.bridge-lite.ios`) или аргументом бинарника. Все внешние пути (Finder, Dock, терминал)
+  идут через `LibraryStore.openFolderWithChecks` — так же, как Open Folder….
 
 ## Философия (PHILOSOPHY.md) — ограничения на любые новые функции
 1. Приложение только **смотрит, сравнивает, оценивает**. Никакой проявки, ретуши, экспорта, правки пикселей.

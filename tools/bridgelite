@@ -1,0 +1,24 @@
+#!/bin/bash
+# Open a folder in BridgeLite from the terminal, the same way as File → Open Folder….
+#
+# Usage:
+#   tools/bridgelite [folder]      # default: current directory
+#
+# Targets this fork's build by bundle id (io.github.bridge-lite), so the
+# App Store copy (io.github.bridge-lite.ios) is not picked up by name.
+# Override with BRIDGELITE_BUNDLE_ID if needed.
+
+set -euo pipefail
+
+BUNDLE_ID="${BRIDGELITE_BUNDLE_ID:-io.github.bridge-lite}"
+TARGET="${1:-.}"
+
+if [ ! -d "$TARGET" ]; then
+    echo "bridgelite: not a folder: $TARGET" >&2
+    exit 1
+fi
+
+# Absolute path: LaunchServices resolves relative paths against its own cwd, not ours.
+FOLDER="$(cd "$TARGET" && pwd -P)"
+
+exec open -b "$BUNDLE_ID" "$FOLDER"

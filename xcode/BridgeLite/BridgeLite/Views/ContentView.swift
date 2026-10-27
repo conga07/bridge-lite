@@ -18,7 +18,7 @@ struct ContentView: View {
         // onChange(of: nsWindow) が遅れて発火するため、ここで store.window を確実に設定。
         // でないと OpenFolderRegistry への登録が漏れる。
         store.window = win
-        store.loadFolder(pending)
+        store.openFolderWithChecks(pending)
     }
 
     private func applyWindowTitle(_ window: NSWindow?) {
@@ -49,7 +49,7 @@ struct ContentView: View {
                 (NSApp.delegate as? AppDelegate)?.pendingOpenURL = nil
                 // onChange(of: nsWindow) が遅れて発火するため、ここで store.window を確実に設定。
                 store.window = win
-                store.loadFolder(url)
+                store.openFolderWithChecks(url)
             }
             .onChange(of: nsWindow) { _, newWindow in
                 guard let newWindow else { return }

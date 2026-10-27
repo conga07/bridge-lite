@@ -12,6 +12,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSWindow.allowsAutomaticWindowTabbing = false
     }
 
+    /// ターミナルからバイナリを直接起動した場合 (`BridgeLite.app/Contents/MacOS/BridgeLite <folder>`)、
+    /// 引数のフォルダを Finder open と同じ経路で開く。`open -a BridgeLite <folder>` は
+    /// Apple Event で application(_:open:) に届くのでここは通らない。
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        let cwd = URL(filePath: FileManager.default.currentDirectoryPath, directoryHint: .isDirectory)
+        // "-NSDocumentRevisionsDebugMode YES" のような AppKit/Xcode の引数は存在するフォルダにならないので除外される。
+        let folders = CommandLine.arguments.dropFirst()
+            .filter { !$0.hasPrefix("-") }
+            .map { URL(filePath: ($0 as NSString).expandingTildeInPath, relativeTo: cwd).standardizedFileURL }
+            .filter { (try? $0.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true }
+        guard let folder = folders.first else { return }
+        application(NSApp, open: [URL(filePath: folder.path, directoryHint: .isDirectory)])
+    }
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return true
     }
