@@ -93,7 +93,7 @@ targets:
         CFBundleName: BridgeLite
         CFBundleDisplayName: BridgeLite
         CFBundleIdentifier: io.github.bridge-lite
-        CFBundleVersion: "22"
+        CFBundleVersion: "23"
         CFBundleShortVersionString: "0.5.2"
         NSHumanReadableDescription: "Lightweight RAW+JPG image viewer"
         NSHumanReadableCopyright: "Copyright © 2026 hoge128. All rights reserved."
