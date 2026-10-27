@@ -229,45 +229,6 @@ struct SettingsView: View {
                     showClearRenderCacheAlert = true
                 }
             }
-            #if !APPSTORE
-            // Sparkle-driven update controls. Mac App Store builds update via the
-            // App Store, so this section is compiled out there.
-            Section {
-                Toggle(String(localized: "settings.update.toggle",
-                              defaultValue: "Check for Updates Automatically"),
-                       isOn: Binding(
-                           get: { UpdaterController.shared.updater.automaticallyChecksForUpdates },
-                           set: { UpdaterController.shared.updater.automaticallyChecksForUpdates = $0 }
-                       ))
-                Text(String(localized: "settings.update.description",
-                            defaultValue: "Checks once at launch and every 24 hours afterwards."))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                HStack {
-                    Button(String(localized: "settings.update.check_now",
-                                  defaultValue: "Check Now")) {
-                        UpdaterController.shared.checkForUpdates()
-                    }
-                    Spacer()
-                    if let last = UpdaterController.shared.updater.lastUpdateCheckDate {
-                        Text(String(
-                            format: String(localized: "settings.update.last_checked %@",
-                                           defaultValue: "Last checked: %@"),
-                            SettingsView.formatDate(last)))
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        Text(String(localized: "settings.update.never_checked",
-                                    defaultValue: "Not yet checked"))
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            } header: {
-                Text(String(localized: "settings.update.section",
-                            defaultValue: "Updates"))
-            }
-            #endif
             Section("Cache") {
                 LabeledContent("Database Size") {
                     if cacheSize < 0 {

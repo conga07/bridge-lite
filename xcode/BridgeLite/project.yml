@@ -100,12 +100,12 @@ targets:
         # Finder の右クリック「このアプリケーションで開く」と Dock ドラッグで
         # フォルダを開けるようにするための公開ドキュメントタイプ宣言。
         # xcodegen が Info.plist を生成上書きするので、ここに含める必要がある。
-        SUFeedURL: "https://hoge128.github.io/bridge-lite/appcast.xml"
+        # Fork: update checks disabled (no SUFeedURL, Sparkle not started).
         SUPublicEDKey: "aVwGOcsYTnZ/rchyd9K+ZRhph0Xy+oOtU4oa9S0ZwhI="
         SUEnableInstallerLauncherService: true
-        SUEnableAutomaticChecks: true
+        SUEnableAutomaticChecks: false
         SUScheduledCheckInterval: 86400
-        SUAllowsAutomaticUpdates: true
+        SUAllowsAutomaticUpdates: false
         LSApplicationCategoryType: "public.app-category.photography"
         CFBundleDocumentTypes:
           - CFBundleTypeName: Folder

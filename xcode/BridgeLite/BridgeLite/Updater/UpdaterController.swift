@@ -18,7 +18,7 @@ final class UpdaterController: NSObject {
         let delegate = UpdaterDelegate()
         self.delegate = delegate
         self.controller = SPUStandardUpdaterController(
-            startingUpdater: true,
+            startingUpdater: false,  // fork: update checks disabled
             updaterDelegate: delegate,
             userDriverDelegate: nil
         )
